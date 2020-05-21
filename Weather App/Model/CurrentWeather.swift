@@ -17,6 +17,7 @@ struct CurrentWeather {
     let name: String
 }
 
+
 struct Weather {
     let id: Int
     let main: String
