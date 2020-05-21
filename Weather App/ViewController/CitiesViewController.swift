@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  CitiesViewController.swift
 //  Weather App
 //
 //  Created by Admin on 21/05/2020.
@@ -8,12 +8,11 @@
 
 import UIKit
 
-class WeatherViewController: UIViewController {
-
+class CitiesViewController: UIViewController {
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.view.backgroundColor = .white
     }
 }
-
