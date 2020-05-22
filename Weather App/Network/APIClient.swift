@@ -10,29 +10,65 @@ import Foundation
 
 class APIClient {
     
-    typealias CurrentWeatherCompletion = (CurrentWeather?, Error?) -> Void
-    typealias HourlyWeatherCompletion = (HourlyWeather?, Error?) -> Void
+    typealias CurrentWeatherCompletion = (CurrentWeather?, ResponseError?) -> Void
+    typealias HourlyWeatherCompletion = (HourlyWeather?, ResponseError?) -> Void
     
     static let sh = APIClient()
-    init () {}
+ 
+    private var dataTask: URLSessionDataTask?
+    private lazy var session = URLSession(configuration: .default)
     
-    private let apiKey = "9dd287677c80653d5ff5ac9a2a9f7985"
-    private let urlPath = "api.openweathermap.org"
+    private init () {}
     
-    func request<T: Decodable>(at cityId: Int,
-                               with urlPath: String,
-                               completionHandler completion: @escaping(_ response: T?,_ error: Error?) -> ()) {
+    func request<T: Decodable>(at city: String,
+                               with urlPath: NetworkConstants.UrlPath,
+                               completionHandler completion: @escaping (_ response: T?, _ error: ResponseError?) -> ()) {
+        let url = "\(NetworkConstants.baseUrl)\(urlPath)"
         
+        var urlComponents: URLComponents? {
+            var components = URLComponents(string: url)
+            let queryItems = [URLQueryItem(name: "q", value: city),
+                              URLQueryItem(name: "appid", value: NetworkConstants.apiKey)]
+            components?.queryItems = queryItems
+            return components
+        }
+        
+        guard let components = urlComponents?.url else { return }
+        let request = URLRequest(url: components)
+        
+        session.dataTask(with: request) { data, response, error in
+            if error != nil {
+                completion(nil, .invalidURL)
+            }
+            guard let httpResponse = response as? HTTPURLResponse else {
+                completion(nil, .parsingError)
+                return
+            }
+            if httpResponse.statusCode == 200 || httpResponse.statusCode == 201 {
+                if let data = data {
+                    do {
+                        let result = try JSONDecoder().decode(T.self, from: data)
+                        completion(result, nil)
+                    } catch {
+                        completion(nil, .parsingError)
+                    }
+                } else {
+                    completion (nil, .parsingError)
+                }
+            } else {
+                completion(nil, .networkError(code: httpResponse.statusCode))
+            }
+        }.resume()
     }
     
-    func fetchCurrentWeather(at cityId: Int, completionHandler completion: @escaping(CurrentWeatherCompletion) ) {
-        self.request(at: cityId, with: "") { (weather: CurrentWeather?, error) in
+    func fetchCurrentWeather(at city: String, completionHandler completion: @escaping(CurrentWeatherCompletion) ) {
+        self.request(at: city, with: .weather) { (weather: CurrentWeather?, error) in
             completion(weather, error)
         }
     }
     
-    func fetchHourlyWeather(at cityId: Int, completionHandler completion: @escaping(HourlyWeatherCompletion)) {
-        self.request(at: cityId, with: "") { (weather: HourlyWeather?, error) in
+    func fetchHourlyWeather(at city: String, completionHandler completion: @escaping(HourlyWeatherCompletion)) {
+        self.request(at: city, with: .forecast) { (weather: HourlyWeather?, error) in
             completion(weather, error)
         }
     }

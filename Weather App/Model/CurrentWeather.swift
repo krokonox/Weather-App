@@ -10,11 +10,11 @@ import Foundation
 
 struct CurrentWeather: Decodable {
     let weather: [Weather]
-    let main: [Main]
-    let wind: [Wind]
-    let clouds: [Clouds]
-    let sys: [Sys]
-    let name: String
+//    let main: Main
+//    let wind: Wind
+//    let clouds: Clouds
+//    let sys: Sys
+//    let name: String
 }
 
 

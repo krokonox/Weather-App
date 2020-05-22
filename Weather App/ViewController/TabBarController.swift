@@ -18,16 +18,14 @@ class TabBarController: UITabBarController {
     
     private func setupTabBar() {
         self.view.backgroundColor = .white
-        self.tabBar.tintColor = UIColor(named: "RedColor")
+        self.tabBar.tintColor = UIColor(named: "SkyBlue")
         self.tabBar.barTintColor = .white
         
         let weatherVC = WeatherViewController()
-        weatherVC.tabBarItem.image = UIImage(named: "weatherTab")
-        weatherVC.title = "Weather"
+        weatherVC.tabBarItem.image = UIImage(named: "WeatherTab")
         
         let citiesVC = CitiesViewController()
-        citiesVC.tabBarItem.image = UIImage(named: "cityTab")
-        citiesVC.title = "Cities"
+        citiesVC.tabBarItem.image = UIImage(named: "CityTab")
         
         self.viewControllers = [weatherVC, citiesVC]
     }

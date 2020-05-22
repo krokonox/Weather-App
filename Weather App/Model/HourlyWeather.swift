@@ -8,4 +8,6 @@
 
 import Foundation
 
-struct HourlyWeather: Decodable {}
+struct HourlyWeather: Decodable {
+    
+}
