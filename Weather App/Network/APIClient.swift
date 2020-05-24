@@ -11,7 +11,7 @@ import Foundation
 class APIClient {
     
     typealias CurrentWeatherCompletion = (CurrentWeather?, ResponseError?) -> Void
-    typealias HourlyWeatherCompletion = (HourlyWeather?, ResponseError?) -> Void
+    typealias HourlyWeatherCompletion = (HourlyWeatherResponse?, ResponseError?) -> Void
     
     static let sh = APIClient()
  
@@ -23,7 +23,7 @@ class APIClient {
     func request<T: Decodable>(at city: String,
                                with urlPath: NetworkConstants.UrlPath,
                                completionHandler completion: @escaping (_ response: T?, _ error: ResponseError?) -> ()) {
-        let url = "\(NetworkConstants.baseUrl)\(urlPath)"
+        let url = "\(NetworkConstants.baseUrl)\(urlPath.rawValue)"
         
         var urlComponents: URLComponents? {
             var components = URLComponents(string: url)
@@ -34,8 +34,9 @@ class APIClient {
         }
         
         guard let components = urlComponents?.url else { return }
-        let request = URLRequest(url: components)
         
+        let request = URLRequest(url: components)
+       
         session.dataTask(with: request) { data, response, error in
             if error != nil {
                 completion(nil, .invalidURL)
@@ -62,13 +63,13 @@ class APIClient {
     }
     
     func fetchCurrentWeather(at city: String, completionHandler completion: @escaping(CurrentWeatherCompletion) ) {
-        self.request(at: city, with: .weather) { (weather: CurrentWeather?, error) in
+        self.request(at: city, with: .current) { (weather: CurrentWeather?, error) in
             completion(weather, error)
         }
     }
     
     func fetchHourlyWeather(at city: String, completionHandler completion: @escaping(HourlyWeatherCompletion)) {
-        self.request(at: city, with: .forecast) { (weather: HourlyWeather?, error) in
+        self.request(at: city, with: .forecast) { (weather: HourlyWeatherResponse?, error) in
             completion(weather, error)
         }
     }

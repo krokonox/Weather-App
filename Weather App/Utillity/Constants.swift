@@ -6,7 +6,7 @@
 //  Copyright © 2020 Admin. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 struct NetworkConstants {
     static let apiKey = "9dd287677c80653d5ff5ac9a2a9f7985"
@@ -15,8 +15,24 @@ struct NetworkConstants {
     struct ParameterKeys {}
     struct ParameterValues {}
     
-    enum UrlPath: String, CaseIterable {
-        case weather = "weather"
+    enum UrlPath: String {
+        case current = "weather"
         case forecast = "forecast"
+    }
+}
+
+enum WeatherCellHeight: Int {
+    case current, hourly, weekDays, currentDetails
+    var cellHeight: CGFloat {
+        switch self {
+        case .current:
+            return 80
+        case .hourly:
+            return 70
+        case .weekDays:
+            return 180
+        case .currentDetails:
+            return 200
+        }
     }
 }
