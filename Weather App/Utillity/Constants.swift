@@ -22,9 +22,11 @@ struct NetworkConstants {
 }
 
 enum WeatherCellHeight: Int {
-    case current, hourly, weekDays, currentDetails
+    case header, current, hourly, weekDays, currentDetails
     var cellHeight: CGFloat {
         switch self {
+        case .header:
+            return 200
         case .current:
             return 80
         case .hourly:

@@ -24,6 +24,23 @@ class WeatherViewController: UIViewController {
         return ativityIndicator
     }()
     
+    lazy var collectionView: UICollectionView = {
+        let width = UIScreen.main.bounds.width
+        let layout = WeatherCollectionViewLayout()
+        layout.headerSize = CGSize(width: width, height: WeatherCellHeight.header.cellHeight)
+        layout.todayWeatherCell = CGSize(width: width, height: WeatherCellHeight.current.cellHeight)
+        layout.weeklyWeatherCell = CGSize(width: width, height: WeatherCellHeight.weekDays.cellHeight)
+        layout.summuryWeatherCell = CGSize(width: width, height: WeatherCellHeight.hourly.cellHeight)
+        layout.extendedInfoWeatherCell = CGSize(width: width, height: WeatherCellHeight.currentDetails.cellHeight)
+        
+        let cv = UICollectionView()
+        cv.collectionViewLayout = layout
+        cv.register(WeatherHeaderView.self,
+                    forSupplementaryViewOfKind: WeatherCollectionViewLayout.ElementType.WeatherHeaderView.kind,
+        withReuseIdentifier: WeatherCollectionViewLayout.ElementType.WeatherHeaderView.id)
+        
+        return cv
+    }()
     override func viewDidLoad() {
         super.viewDidLoad()
         //self.setupViews()
