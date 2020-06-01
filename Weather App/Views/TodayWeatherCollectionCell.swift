@@ -8,6 +8,11 @@
 
 import UIKit
 
-class TodayWeatherCell: UICollectionViewCell {
+class TodayWeatherCell: DataSourceCell {
     
+    override var dataSourceItem: Any? {
+        didSet {
+            
+        }
+    }
 }

@@ -12,7 +12,11 @@ class WeatherHelper {
     
     static func convertTemperature() {}
     static func getWeatherSysName() {}
-        
+//    static func getHourfromDate(date: Date) -> String {
+//        let hour = date.getHour()
+//    }
+    
+    
     static func getArrayofDays(array: [HourlyWeather]) -> [WeatherDay] {
         var arr: [WeatherDay] = []
         var index = 1

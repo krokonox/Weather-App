@@ -28,4 +28,12 @@ extension Date {
         
         return day
     }
+    
+    func getHour() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "hh"
+        let hour = formatter.string(from: self)
+        
+        return hour
+    }
 }
