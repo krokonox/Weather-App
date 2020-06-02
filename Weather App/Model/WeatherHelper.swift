@@ -10,7 +10,9 @@ import Foundation
 
 class WeatherHelper {
     
-    static func convertTemperature() {}
+    static func convertTemperature() {
+        
+    }
     static func getWeatherSysName() {}
 //    static func getHourfromDate(date: Date) -> String {
 //        let hour = date.getHour()
