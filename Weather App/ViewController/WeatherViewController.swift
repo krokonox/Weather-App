@@ -9,8 +9,12 @@
 import UIKit
 
 class WeatherViewController: UIViewController {
+    
     var weather: CurrentWeather?
     var weatherForecast: HourlyWeatherResponse?
+    var dataSource = WeatherCollectionDataSource()
+    
+    let dispatch = DispatchGroup()
     
     lazy var indicatorView: UIActivityIndicatorView = {
         let ativityIndicator = UIActivityIndicatorView()
@@ -43,9 +47,9 @@ class WeatherViewController: UIViewController {
     }()
     override func viewDidLoad() {
         super.viewDidLoad()
-        //self.setupViews()
+    
         self.view.addSubview(indicatorView)
-        self.fetchWeather()
+        self.requestsMade()
     }
     
     private func setupViews() {
@@ -60,14 +64,38 @@ class WeatherViewController: UIViewController {
         self.view.insertSubview(backgroundImage, at: 0)
     }
     
+    private func requestsMade() {
+        self.fetchWeather()
+        
+        self.dispatch.notify(queue: .main) { [weak self] in
+            self?.indicatorView.stopAnimating()
+            self?.setupViews()
+        }
+    }
+    
     private func fetchWeather() {
-        APIClient.sh.fetchHourlyWeather(at: "berlin") { hourlyweather, error in
+        APIClient.sh.fetchHourlyWeather(at: "berlin")  {[weak self] hourlyweather, error in
+            self?.dispatch.enter()
             DispatchQueue.main.async {
                 if let weather = hourlyweather {
-                    self.indicatorView.stopAnimating()
-                    print(WeatherHelper.getArrayofDays(array: weather.list))
+                    self?.dataSource.hourlyWeather = weather.list
+                    self?.dispatch.leave()
                 } else {
-                    self.alert(message: error?.description ?? "")
+                    self?.alert(message: error?.description ?? "")
+                    self?.dispatch.leave()
+                }
+            }
+        }
+        
+        APIClient.sh.fetchCurrentWeather(at: "berlin") { [weak self] currentweather, error in
+            self?.dispatch.enter()
+            DispatchQueue.main.async {
+                if let weather = currentweather {
+                    self?.dataSource.currentWeather = weather
+                    self?.dispatch.leave()
+                } else {
+                    self?.alert(message: error?.description ?? "")
+                    self?.dispatch.leave()
                 }
             }
         }

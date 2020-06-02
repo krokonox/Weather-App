@@ -40,4 +40,7 @@ class VerticalHourlyWeatherCollectionCell: DataSourceCell {
             humidityLabel.text = "\(item.main.humidity)"
         }
     }
+    
+    private func setupUI() {}
+    private func setupConstraints() {}
 }

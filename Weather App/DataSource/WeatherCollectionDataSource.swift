@@ -10,8 +10,14 @@ import UIKit
 
 class WeatherCollectionDataSource: NSObject, UICollectionViewDataSource {
     
-    let weatherForecast: [WeatherDay] = []
-    let currentWeather: [CurrentWeather] = []
+    var weatherForecast: [WeatherDay] = []
+    var hourlyWeather: [HourlyWeather] = []
+    var currentWeather: CurrentWeather? = nil
+//
+//    required init(hourlyWeather: HourlyWeather, currentWeather: CurrentWeather) {
+//        self.hourlyWeather = hourlyWeather
+//        self.currentWeather = currentWeather
+//    }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 4
@@ -29,6 +35,7 @@ class WeatherCollectionDataSource: NSObject, UICollectionViewDataSource {
             
         case 1:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HourlyWeatherCollectionCell.reuseIdentifier, for: indexPath) as! HourlyWeatherCollectionCell
+            cell.dataSource.items = hourlyWeather
             return cell
             
         case 2:

@@ -7,6 +7,26 @@
 //
 
 import UIKit
+import SnapKit
 
-class WeeklyWeatherCollectionCell: UICollectionViewCell {}
+class WeeklyWeatherCollectionCell: DataSourceCell {
+    
+    lazy var titleLabel: WhiteLabel = {
+        let title = WhiteLabel()
+        return title
+    }()
+    
+    override var dataSourceItem: Any? {
+        didSet {
+            guard let weeklyModel = dataSourceItem as? WeatherDay else { return }
+            self.set(weather: weeklyModel)
+        }
+    }
+    
+    private func setupUI() {}
+    private func setupConstraints() {}
+    private func set(weather: WeatherDay) {
+        titleLabel.text = weather.day
+    }
+}
 

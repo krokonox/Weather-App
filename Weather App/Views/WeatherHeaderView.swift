@@ -54,8 +54,7 @@ class WeatherHeaderView: UICollectionReusableView {
     private func setupViews() {
         self.stackView.addArrangedSubview(temperatureHighLabel)
         self.stackView.addArrangedSubview(temperatureLowLabel)
-        
-        
+     
     }
     
     private func setupConstraints() {}

@@ -8,5 +8,22 @@
 
 import UIKit
 
-class HourlyWeatherCollectionCell: UICollectionViewCell {}
+class HourlyWeatherCollectionCell: DataSourceCell {
+    
+    let dataSource = HourlyWeatherCollectionDataSource()
+    lazy var collectionView: UICollectionView = {
+        let cv = UICollectionView()
+        return cv
+    }()
+    
+    override var dataSourceItem: Any? {
+        didSet {
+            self.configureDataSource()
+        }
+    }
+    
+    private func configureDataSource() {
+        collectionView.dataSource = dataSource
+    }
+}
 
