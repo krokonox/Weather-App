@@ -38,3 +38,33 @@ enum WeatherCellHeight: Int {
         }
     }
 }
+
+enum TempUnits: Int {
+    case celsius, fahrenheit
+    
+    var decsription: String {
+        switch self {
+        case .celsius:
+            return "C"
+        case .fahrenheit:
+            return "F"
+        }
+    }
+}
+
+enum TempSign: String {
+    case withSign, withoutSign
+    
+    var description: String {
+        switch self {
+        case .withSign:
+            return "°"
+        case .withoutSign:
+            return ""
+        }
+    }
+}
+
+enum DistanceUnit: Int {
+    case meter, mile
+}

@@ -6,4 +6,23 @@
 //  Copyright © 2020 Admin. All rights reserved.
 //
 
-import Foundation
+import UIKit
+
+class WhiteLabel: UILabel {
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.setup()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        self.setup()
+    }
+    
+    private func setup() {
+        self.textColor = .white
+        self.font = UIFont.systemFont(ofSize: 18)
+    }
+}
+

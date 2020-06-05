@@ -11,7 +11,7 @@ import Foundation
 struct WeatherDay {
     let day: String
     let humidity: Int
-    let icon: String
+    let icon: Int
     let minTemp: Int
     let maxTemp: Int
 }

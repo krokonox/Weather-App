@@ -10,14 +10,65 @@ import Foundation
 
 class WeatherHelper {
     
-    static func convertTemperature() {
-        
+    static func convertTemperature(temperature: Int, unit: TempUnits, unitSign: TempSign) -> String {
+        var temp = 0
+        if unit == .celsius {
+            temp = temperature - 273
+        } else  {
+            temp = (temperature - 273) * 9/5 + 32
+        }
+        return "\(temp) \(unitSign.description)"
     }
-    static func getWeatherSysName() {}
-//    static func getHourfromDate(date: Date) -> String {
-//        let hour = date.getHour()
-//    }
     
+    static func convertUnixTime(unixTime: Int, timeZone: Int) -> String {
+        let date = Date(timeIntervalSince1970: TimeInterval(unixTime))
+        let dateFormatter = DateFormatter()
+        let zone = TimeZone(secondsFromGMT: Int(timeZone))
+        dateFormatter.timeZone = zone
+        dateFormatter.locale = NSLocale.current
+        dateFormatter.timeStyle = .short
+        return  dateFormatter.string(from: date)
+    }
+    
+    // Complete image names
+    static func getWeatherSysName(id: Int, isNight: Bool) -> String {
+        var image = ""
+        switch id {
+        case 200...300:
+            image = "ThunderStorm"
+        case 300...400:
+            image = "Rainy"
+        case 500...600:
+            if id <= 504 {
+                image = "Rainy" }
+            else {
+                image = "ThunderStorm"
+            }
+        case 600...700:
+            image = "Snow"
+        case 800:
+            if isNight {
+                image = "NightClear"
+            } else {
+                image = "Sunny"
+            }
+        case 801...900:
+            if isNight {
+                image = "NightPartlyCloudy"
+            } else {
+                image = "DayPartlyCloudy"
+            }
+        default:
+            image = "Sunny"
+        }
+        return image
+    }
+    
+    static func returnPercentage<T>(number: T) -> String {
+        return "\(number) %"
+    }
+    
+    static func convertSpeed() {}
     
     static func getArrayofDays(array: [HourlyWeather]) -> [WeatherDay] {
         var arr: [WeatherDay] = []
@@ -35,7 +86,7 @@ class WeatherHelper {
                 let day = item.dt_txt.returnAsDate()
                 arr.append(WeatherDay(day: day?.getTodayWeekDay() ?? "",
                                       humidity: humidity / 8,
-                                      icon: item.weather.first?.icon ?? "",
+                                      icon: item.weather.first?.id,
                                       minTemp: Int(temp_min / 8),
                                       maxTemp: Int(temp_max / 8)))
                 temp_max = 0.00

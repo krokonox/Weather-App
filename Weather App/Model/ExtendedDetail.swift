@@ -8,8 +8,8 @@
 
 import Foundation
 
-enum ExtandedDetail: String {
-    case sunrise, sunset, chanceOfRain, humidity, wind, feelsLike, presipitation, pressure, visibility, uvIndex
+enum ExtendedDetailCases: String, CaseIterable {
+    case sunrise, sunset, chanceOfRain, humidity, wind, feelsLike, pressure, visibility
     
     var description: String {
         var text = ""
@@ -18,9 +18,6 @@ enum ExtandedDetail: String {
             text = "CHANCE OF RAIN"
         case .feelsLike:
             text = "FEELS LIKE"
-        case .uvIndex:
-            text = "UV INDEX"
-            
         default:
             text = self.rawValue.uppercased()
         }
@@ -35,8 +32,7 @@ struct ExtendedDetail {
     let humidity: Float
     let wind: Float
     let feelsLileTemp: Int
-    let presipitation: Float
     let pressure: Float
     let visibility: Int
-    let unIndex: Int
+    let timeZone: Int
 }
