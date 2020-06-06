@@ -8,7 +8,7 @@
 
 import UIKit
 
-class WeeklyWeatherDataSource: NSObject, UICollectionViewDataSource {
+class WeeklyWeatherDataSource: NSObject, UICollectionViewDataSource, UICollectionViewDelegate {
     
     var viewModel: [WeeklyWeatherViewModel] = []
     

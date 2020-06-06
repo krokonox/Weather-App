@@ -10,10 +10,7 @@ import UIKit
 
 class SummuryWeatherCollectionCell: DataSourceCell {
     
-    lazy var titleLabel: WhiteLabel = {
-        let title = WhiteLabel()
-        return title
-    }()
+    lazy var titleLabel: WhiteLabel = WhiteLabel()
     
     override var dataSourceItem: Any? {
         didSet {
@@ -22,7 +19,11 @@ class SummuryWeatherCollectionCell: DataSourceCell {
         }
     }
     
-    private func setupUI() {}
+    override func setupUI() {
+        self.addSubview(titleLabel)
+        self.setupConstraints()
+    }
+    
     private func setupConstraints() {}
     private func set(weather: CurrentWeather) {
         let temp = weather.main.temp

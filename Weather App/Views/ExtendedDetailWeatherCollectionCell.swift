@@ -8,7 +8,7 @@
 
 import UIKit
 
-class DetailWeatherCollectionCell: DataSourceCell {
+class ExtendedDetailWeatherCollectionCell: DataSourceCell {
     
     private lazy var stackView: UIStackView = {
         let stack = UIStackView()
@@ -22,7 +22,7 @@ class DetailWeatherCollectionCell: DataSourceCell {
         }
     }
     
-    private func setupUI() {}
+    override func setupUI() {}
     private func setupConstraints() {}
     private func set(weather: CurrentWeather) {}
 }

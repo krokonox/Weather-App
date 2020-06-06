@@ -14,10 +14,10 @@ class DataSourceCell: UICollectionViewCell {
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        setupViews()
+        setupUI()
     }
 
-    open func setupViews() {
+    open func setupUI() {
         clipsToBounds = true
     }
     

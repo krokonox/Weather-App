@@ -15,4 +15,8 @@ class TodayWeatherCell: DataSourceCell {
             
         }
     }
+    
+    override func setupUI() {
+        <#code#>
+    }
 }

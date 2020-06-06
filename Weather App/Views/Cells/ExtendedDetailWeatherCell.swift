@@ -9,15 +9,16 @@
 import UIKit
 
 class ExtendedDetailWeatherCell: DataSourceCell {
+    
     override var dataSourceItem: Any? {
         didSet {
-            guard let detail = dataSourceItem as? String else { return }
+            guard let detail = dataSourceItem as? [ExtendedDetailCases : String] else { return }
             self.set(extendedDetail: detail)
         }
     }
     
-    private func setupUI() {}
-    private func set(extendedDetail: String) {
+    override func setupUI() {}
+    private func set(extendedDetail: [ExtendedDetailCases : String]) {
         
     }
 }

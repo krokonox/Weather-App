@@ -22,6 +22,13 @@ class HourlyWeatherCollectionCell: DataSourceCell {
         }
     }
     
+    override func setupUI() {
+        self.addSubview(collectionView)
+        self.setupConstraints()
+    }
+    
+    private func setupConstraints() {}
+    
     private func configureDataSource() {
         collectionView.dataSource = dataSource
     }
