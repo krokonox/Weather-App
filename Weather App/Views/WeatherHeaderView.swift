@@ -11,6 +11,12 @@ import SnapKit
 
 class WeatherHeaderView: UICollectionReusableView {
     
+    var weather: CurrentWeather? {
+        didSet {
+            guard let data = weather else { return }
+            self.set(weather: data)
+        }
+    }
     private lazy var cityLabel: WhiteLabel = {
         let city = WhiteLabel()
         return city
@@ -28,21 +34,6 @@ class WeatherHeaderView: UICollectionReusableView {
         return temp
     }()
     
-    private lazy var dayLabel: WhiteLabel = {
-        let day = WhiteLabel()
-        return day
-    }()
-    
-    private lazy var temperatureHighLabel: WhiteLabel = {
-        let temp = WhiteLabel()
-        return temp
-    }()
-    
-    private lazy var temperatureLowLabel: WhiteLabel = {
-        let temp = WhiteLabel()
-        return temp
-    }()
-    
     lazy var stackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
@@ -51,11 +42,40 @@ class WeatherHeaderView: UICollectionReusableView {
         return stack
     }()
     
-    private func setupViews() {
-        self.stackView.addArrangedSubview(temperatureHighLabel)
-        self.stackView.addArrangedSubview(temperatureLowLabel)
-     
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.setupUI()
+    }
+    required init?(coder aCoder: NSCoder) {
+        super.init(coder: aCoder)
+        self.setupUI()
     }
     
-    private func setupConstraints() {}
+    private func setupUI() {
+        self.addSubview(stackView)
+        self.backgroundColor = .clear
+        self.stackView.addArrangedSubview(cityLabel)
+        self.stackView.addArrangedSubview(desciptionLabel)
+        self.stackView.addArrangedSubview(temperatureLabel)
+        
+        self.stackView.snp.makeConstraints { (make) in
+            make.center.equalToSuperview()
+            make.height.width.equalTo(100)
+        }
+    }
+    
+    private func set(weather: CurrentWeather) {
+        self.cityLabel.text = weather.name
+        self.desciptionLabel.text = weather.weather.first?.description
+        self.temperatureLabel.text = "\(weather.main.temp)\(TempSign.withSign)"
+    }
+    
+    override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
+        super.apply(layoutAttributes)
+        
+        guard let weatherLayoutAttributes = layoutAttributes as? WeatherCollectionLayoutAttributes else { return }
+        cityLabel.alpha = weatherLayoutAttributes.headerAlpha
+        desciptionLabel.alpha = weatherLayoutAttributes.headerAlpha
+        temperatureLabel.alpha = weatherLayoutAttributes.headerAlpha
+    }
 }

@@ -14,4 +14,8 @@ struct WeatherDay {
     let icon: Int
     let minTemp: Int
     let maxTemp: Int
+    
+//    init(weather: HourlyWeather) {
+//        
+//    }
 }

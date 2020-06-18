@@ -12,7 +12,7 @@ class HourlyWeatherCollectionCell: DataSourceCell {
     
     let dataSource = HourlyWeatherCollectionDataSource()
     lazy var collectionView: UICollectionView = {
-        let cv = UICollectionView()
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
         return cv
     }()
     
@@ -24,6 +24,7 @@ class HourlyWeatherCollectionCell: DataSourceCell {
     
     override func setupUI() {
         self.addSubview(collectionView)
+        
         self.setupConstraints()
     }
     

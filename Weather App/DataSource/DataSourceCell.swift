@@ -19,6 +19,7 @@ class DataSourceCell: UICollectionViewCell {
 
     open func setupUI() {
         clipsToBounds = true
+        self.backgroundColor = .clear
     }
     
     public required init?(coder aDecoder: NSCoder) {

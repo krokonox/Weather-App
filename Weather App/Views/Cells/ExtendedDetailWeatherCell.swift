@@ -7,8 +7,21 @@
 //
 
 import UIKit
+import SnapKit
 
 class ExtendedDetailWeatherCell: DataSourceCell {
+    
+     lazy var textLabel: UITextView = {
+        let label = UITextView()
+        label.isEditable  = false
+        label.backgroundColor = .clear
+        label.isScrollEnabled = false
+        label.font = UIFont.systemFont(ofSize: 19, weight: .thin)
+        label.textColor = .white
+        //label.setLineSpacing(lineSpacing: 1.0)
+        label.textAlignment = .left
+        return label
+    }()
     
     override var dataSourceItem: Any? {
         didSet {
@@ -17,8 +30,19 @@ class ExtendedDetailWeatherCell: DataSourceCell {
         }
     }
     
-    override func setupUI() {}
-    private func set(extendedDetail: [ExtendedDetailCases : String]) {
+    override func setupUI() {
+        super.setupUI()
         
+        self.addSubview(textLabel)
+        self.textLabel.snp.makeConstraints { (make) in
+            make.edges.equalToSuperview()
+        }
+    }
+    private func set(extendedDetail: [ExtendedDetailCases : String]) {
+        for (key, value) in extendedDetail {
+            let attributedText = NSMutableAttributedString.setupString(text: key.description, description: "\n\(value)")
+            attributedText.setLineSpacing(1.0)
+            textLabel.text = attributedText.string
+        }
     }
 }

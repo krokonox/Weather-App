@@ -36,7 +36,7 @@ class APIClient {
         guard let components = urlComponents?.url else { return }
         
         let request = URLRequest(url: components)
-       
+     
         session.dataTask(with: request) { data, response, error in
             if error != nil {
                 completion(nil, .invalidURL)

@@ -30,6 +30,10 @@ class WeatherHelper {
         return  dateFormatter.string(from: date)
     }
     
+    static func getCurrentDay() -> String {
+        let date = Date()
+        return date.getTodayWeekDay()
+    }
     // Complete image names
     static func getWeatherSysName(id: Int, isNight: Bool) -> String {
         var image = ""
@@ -86,7 +90,7 @@ class WeatherHelper {
                 let day = item.dt_txt.returnAsDate()
                 arr.append(WeatherDay(day: day?.getTodayWeekDay() ?? "",
                                       humidity: humidity / 8,
-                                      icon: item.weather.first?.id,
+                                      icon: item.weather.first?.id ?? 0,
                                       minTemp: Int(temp_min / 8),
                                       maxTemp: Int(temp_max / 8)))
                 temp_max = 0.00
@@ -96,5 +100,13 @@ class WeatherHelper {
             index += 1
         }
         return arr
+    }
+    
+    static func getArrayOfWeeklyViewModels(weather: [WeatherDay]) -> [WeeklyWeatherViewModel] {
+        var array: [WeeklyWeatherViewModel] = []
+        for item in weather {
+            array.append(WeeklyWeatherViewModel(model: item))
+        }
+        return array
     }
 }

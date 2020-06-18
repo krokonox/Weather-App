@@ -31,8 +31,20 @@ struct ExtendedDetail {
     let chanceOfRain: Float
     let humidity: Float
     let wind: Float
-    let feelsLileTemp: Int
+    let feelsLikeTemp: Int
     let pressure: Float
     let visibility: Int
     let timeZone: Int
+    
+    init(weather: CurrentWeather) {
+        self.sunset = WeatherHelper.convertUnixTime(unixTime: weather.sys.sunset, timeZone: weather.timezone)
+        self.sunrise = WeatherHelper.convertUnixTime(unixTime: weather.sys.sunrise, timeZone: weather.timezone)
+        self.chanceOfRain = Float(weather.main.humidity)
+        self.humidity = Float(weather.main.humidity)
+        self.wind = weather.wind.speed
+        self.feelsLikeTemp = Int(weather.main.feels_like)
+        self.pressure = Float(weather.main.pressure)
+        self.visibility = weather.visibility
+        self.timeZone = weather.timezone
+    }
 }

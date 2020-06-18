@@ -9,12 +9,12 @@
 import UIKit
 
 extension UICollectionView {
-    func register<T: UICollectionViewCell>(_: T.Type) where T: Reusable {
-        register(T.self, forCellWithReuseIdentifier: T.reuseIdentifier)
-    }
-    
-    func dequeueReusableCell<T: UICollectionViewCell>() -> T where T: Reusable {
-        register(T.self)
-        return dequeueReusableCell(withReuseIdentifier: T.reuseIdentifier, for: indexPath(for: T.self)) as! T
-    }
+//    func register<T: UICollectionViewCell>(_: T.Type) where T: Reusable {
+//        register(T.self, forCellWithReuseIdentifier: T.reuseIdentifier)
+//    }
+//
+//    func dequeueReusableCell<T: UICollectionViewCell>() -> T where T: Reusable {
+//        register(T.self)
+//        return dequeueReusableCell(withReuseIdentifier: T.reuseIdentifier, for: indexPath(for: T.self)) as! T
+//    }
 }

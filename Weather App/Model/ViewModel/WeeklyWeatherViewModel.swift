@@ -24,6 +24,9 @@ struct WeeklyWeatherViewModel {
         return WeatherHelper.convertTemperature(temperature: viewModel.maxTemp, unit: .celsius, unitSign: .withSign)
     }
     
+    var temperatureString: String {
+        return "\(maxTemperature)   \(minTemperature)"
+    }
     init(model: WeatherDay) {
         self.viewModel = model
     }

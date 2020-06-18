@@ -10,13 +10,14 @@ import UIKit
 
 class WeatherViewController: UIViewController {
     
-    var weather: CurrentWeather?
-    var weatherForecast: HourlyWeatherResponse?
-    var dataSource = WeatherCollectionDataSource()
-    
     let dispatch = DispatchGroup()
     
-    lazy var indicatorView: UIActivityIndicatorView = {
+    var weather: CurrentWeather?
+    var weatherForecast: [HourlyWeather] = []
+    
+    var dataSource = WeatherCollectionDataSource()
+    
+    private lazy var indicatorView: UIActivityIndicatorView = {
         let ativityIndicator = UIActivityIndicatorView()
         ativityIndicator.frame = CGRect(x: 0, y: 0, width: 45, height: 45)
         ativityIndicator.center = self.view.center
@@ -28,23 +29,48 @@ class WeatherViewController: UIViewController {
         return ativityIndicator
     }()
     
-    lazy var collectionView: UICollectionView = {
+    private lazy var backgroundImage: UIImageView = {
+        let image = UIImageView()
+        image.image = UIImage(named: "BackgroundClear")
+        image.clipsToBounds = true
+        return image
+    }()
+    
+    private lazy var collectionView: UICollectionView = {
         let width = UIScreen.main.bounds.width
+       
         let layout = WeatherCollectionViewLayout()
+        
+        
+        layout.itemSize = CGSize(width: width, height: 100)
         layout.headerSize = CGSize(width: width, height: WeatherCellHeight.header.cellHeight)
         layout.todayWeatherCell = CGSize(width: width, height: WeatherCellHeight.current.cellHeight)
+        layout.hourlyWeatherCell = CGSize(width: width, height: WeatherCellHeight.hourly.cellHeight)
         layout.weeklyWeatherCell = CGSize(width: width, height: WeatherCellHeight.weekDays.cellHeight)
         layout.summuryWeatherCell = CGSize(width: width, height: WeatherCellHeight.hourly.cellHeight)
         layout.extendedInfoWeatherCell = CGSize(width: width, height: WeatherCellHeight.currentDetails.cellHeight)
         
-        let cv = UICollectionView()
-        cv.collectionViewLayout = layout
+        
+        let cv = UICollectionView(frame: self.view.frame, collectionViewLayout: layout)
+        
         cv.register(WeatherHeaderView.self,
                     forSupplementaryViewOfKind: WeatherCollectionViewLayout.ElementType.WeatherHeaderView.kind,
-        withReuseIdentifier: WeatherCollectionViewLayout.ElementType.WeatherHeaderView.id)
+                    withReuseIdentifier: WeatherCollectionViewLayout.ElementType.WeatherHeaderView.id)
+        cv.register(TodayWeatherCell.self, forCellWithReuseIdentifier: TodayWeatherCell.reuseIdentifier)
+        cv.register(HourlyWeatherCollectionCell.self, forCellWithReuseIdentifier: HourlyWeatherCollectionCell.reuseIdentifier)
+        cv.register(WeeklyWeatherCollectionCell.self, forCellWithReuseIdentifier: WeeklyWeatherCollectionCell.reuseIdentifier)
+        cv.register(SummuryWeatherCollectionCell.self, forCellWithReuseIdentifier: SummuryWeatherCollectionCell.reuseIdentifier)
+        cv.register(ExtendedDetailWeatherCollectionCell.self, forCellWithReuseIdentifier: ExtendedDetailWeatherCollectionCell.reuseIdentifier)
         
+        cv.backgroundView = backgroundImage
+        cv.dataSource = dataSource
+        cv.delegate = self
+        cv.isScrollEnabled = true
+        cv.alwaysBounceVertical = true
+        cv.showsVerticalScrollIndicator = false
         return cv
     }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     
@@ -53,8 +79,10 @@ class WeatherViewController: UIViewController {
     }
     
     private func setupViews() {
-        self.setBackgroundImage()
-        self.view.addSubview(indicatorView)
+        self.view.addSubview(collectionView)
+        self.collectionView.snp.makeConstraints { (make) in
+            make.edges.equalToSuperview()
+        }
     }
     
     private func setBackgroundImage() {
@@ -68,30 +96,29 @@ class WeatherViewController: UIViewController {
         self.fetchWeather()
         
         self.dispatch.notify(queue: .main) { [weak self] in
-            self?.indicatorView.stopAnimating()
+            self?.dataSource.currentWeather = self?.weather
+            self?.dataSource.hourlyWeather = self?.weatherForecast ?? []
             self?.setupViews()
+            self?.indicatorView.stopAnimating()
+            self?.collectionView.reloadData()
         }
     }
     
     private func fetchWeather() {
+        self.dispatch.enter()
         APIClient.sh.fetchHourlyWeather(at: "berlin")  {[weak self] hourlyweather, error in
-            self?.dispatch.enter()
-            DispatchQueue.main.async {
                 if let weather = hourlyweather {
-                    self?.dataSource.hourlyWeather = weather.list
+                    self?.weatherForecast = weather.list
                     self?.dispatch.leave()
                 } else {
                     self?.alert(message: error?.description ?? "")
                     self?.dispatch.leave()
                 }
-            }
         }
-        
+        self.dispatch.enter()
         APIClient.sh.fetchCurrentWeather(at: "berlin") { [weak self] currentweather, error in
-            self?.dispatch.enter()
-            DispatchQueue.main.async {
                 if let weather = currentweather {
-                    self?.dataSource.currentWeather = weather
+                    self?.weather = weather
                     self?.dispatch.leave()
                 } else {
                     self?.alert(message: error?.description ?? "")
@@ -100,5 +127,9 @@ class WeatherViewController: UIViewController {
             }
         }
     }
-}
 
+extension WeatherViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize (width: view.frame.width, height: 1180)
+    }
+}

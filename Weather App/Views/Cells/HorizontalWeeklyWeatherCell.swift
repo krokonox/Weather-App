@@ -10,20 +10,18 @@ import UIKit
 
 class HorizontalWeeklyWeatherCell: DataSourceCell {
     
+    private lazy var containerView: UIView = UIView()
+    
     private lazy var dayNameLabel: WhiteLabel = {
         let day = WhiteLabel()
+        day.textAlignment = .left
         day.font = UIFont.systemFont(ofSize: 19, weight: .thin)
         return day
     }()
     
-    private lazy var maxTempLabel: WhiteLabel = {
+    private lazy var tempLabel: WhiteLabel = {
         let temp = WhiteLabel()
-        temp.font = UIFont.systemFont(ofSize: 19, weight: .thin)
-        return temp
-    }()
-    
-    private lazy var minTempLabel: WhiteLabel = {
-        let temp = WhiteLabel()
+        temp.textAlignment = .right
         temp.font = UIFont.systemFont(ofSize: 19, weight: .thin)
         return temp
     }()
@@ -37,25 +35,45 @@ class HorizontalWeeklyWeatherCell: DataSourceCell {
         }
     }
     
-    override func setupViews() {
-        super.setupViews()
-        
-        self.addSubview(dayNameLabel)
-        self.addSubview(maxTempLabel)
-        self.addSubview(minTempLabel)
-        self.addSubview(iconImageView)
+    override func setupUI() {
+        super.setupUI()
+
+        self.addSubview(containerView)
+        self.containerView.addSubview(dayNameLabel)
+        self.containerView.addSubview(tempLabel)
+        self.containerView.addSubview(iconImageView)
         
         self.setConstraints()
     }
     
     private func setConstraints() {
-          
+        self.containerView.snp.makeConstraints { (make ) in
+            make.top.equalToSuperview().offset(12)
+            make.left.equalToSuperview().offset(16)
+            make.right.equalToSuperview().inset(16)
+            make.bottom.equalToSuperview().inset(12)
+        }
+        
+        self.dayNameLabel.snp.makeConstraints { (make) in
+            make.top.left.bottom.equalToSuperview()
+            make.right.equalTo(iconImageView.snp.left).inset(50)
+        }
+        
+        self.iconImageView.snp.makeConstraints { (make) in
+            make.top.bottom.equalToSuperview()
+            make.left.equalTo(dayNameLabel.snp.right).offset(50)
+            make.right.equalTo(tempLabel.snp.left).inset(50)
+        }
+        
+        self.tempLabel.snp.makeConstraints { (make) in
+            make.top.right.bottom.equalToSuperview()
+            make.left.equalTo(iconImageView.snp.right).offset(50)
+        }
     }
     
     private func set(viewModel: WeeklyWeatherViewModel) {
         self.dayNameLabel.text = viewModel.day
-        self.maxTempLabel.text = viewModel.maxTemperature
-        self.minTempLabel.text = viewModel.minTemperature
+        self.tempLabel.text = viewModel.temperatureString
         self.iconImageView.image = viewModel.icon
     }
 }

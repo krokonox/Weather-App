@@ -8,29 +8,33 @@
 
 import UIKit
 
-class ExtendedDetailWeatherDataSource: NSObject, UICollectionViewDataSource, UICollectionViewDelegate {
+class ExtendedDetailWeatherDataSource: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     let info: [ExtendedDetailCases] = ExtendedDetailCases.allCases
-    let viewModel: ExtendedDetailViewModel
+    var viewModel: ExtendedDetailViewModel?
     
-    required init(viewModel: ExtendedDetailViewModel) {
-        self.viewModel = viewModel
+    
+//     required init(weatherModel: ExtendedDetail) {
+//        self.viewModel = ExtendedDetailViewModel(weatherModel: weatherModel)
+//        print("init")
+//    }
+
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return info.count / 2
+        return info.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         var detail: [ExtendedDetailCases : String] = [:]
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ExtendedDetailWeatherCell.reuseIdentifier, for: indexPath)
-        if let cell = cell as? ExtendedDetailWeatherCell {
-            for n in indexPath.row...indexPath.row + 2 { // FIX RANGE
-                let text = viewModel.setupString(detail: info[n])
-                detail[info[indexPath.row]] = text
-            }
-            cell.dataSourceItem = detail
-        }
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ExtendedDetailWeatherCell.reuseIdentifier, for: indexPath) as! ExtendedDetailWeatherCell
+        let text = viewModel?.setupString(detail: info[indexPath.row])
+        detail[info[indexPath.row]] = text
+        cell.dataSourceItem = detail
+
         return cell
     }
 }

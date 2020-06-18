@@ -10,9 +10,14 @@ import UIKit
 
 class WeeklyWeatherDataSource: NSObject, UICollectionViewDataSource, UICollectionViewDelegate {
     
-    var viewModel: [WeeklyWeatherViewModel] = []
+    var viewModel: [WeeklyWeatherViewModel] = [] {
+        didSet {
+            print("set")
+        }
+    }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        print("dsfsfdsf")
         return viewModel.count
     }
     

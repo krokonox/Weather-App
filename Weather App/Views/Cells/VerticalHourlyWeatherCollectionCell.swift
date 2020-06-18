@@ -41,6 +41,36 @@ class VerticalHourlyWeatherCollectionCell: DataSourceCell {
         }
     }
     
-    private func setupUI() {}
-    private func setupConstraints() {}
+    override func setupUI() {
+        super.setupUI()
+        
+        self.addSubview(hourLabel)
+        self.addSubview(humidityLabel)
+        self.addSubview(weatherIcon)
+        self.addSubview(temperatureLabel)
+        
+        self.setupConstraints()
+    }
+    private func setupConstraints() {
+        self.hourLabel.snp.makeConstraints { (make) in
+            make.top.left.right.equalToSuperview()
+            make.bottom.equalTo(humidityLabel.snp.top).offset(5)
+        }
+        
+        self.humidityLabel.snp.makeConstraints { (make) in
+            make.top.equalTo(hourLabel.snp.bottom).offset(5)
+            make.left.right.equalToSuperview()
+        }
+        
+        self.weatherIcon.snp.makeConstraints { (make) in
+            make.top.equalTo(humidityLabel.snp.bottom).offset(10)
+            make.left.right.equalToSuperview()
+            make.bottom.equalTo(temperatureLabel.snp.top).offset(10)
+        }
+        
+        self.temperatureLabel.snp.makeConstraints { (make) in
+            make.top.equalTo(weatherIcon.snp.bottom).offset(10)
+            make.left.right.bottom.equalToSuperview()
+        }
+    }
 }
