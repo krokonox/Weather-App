@@ -48,6 +48,7 @@ class HorizontalWeeklyWeatherCell: DataSourceCell {
     
     private func setConstraints() {
         self.containerView.snp.makeConstraints { (make ) in
+           // make.edges.equalToSuperview()
             make.top.equalToSuperview().offset(12)
             make.left.equalToSuperview().offset(16)
             make.right.equalToSuperview().inset(16)
@@ -56,18 +57,15 @@ class HorizontalWeeklyWeatherCell: DataSourceCell {
         
         self.dayNameLabel.snp.makeConstraints { (make) in
             make.top.left.bottom.equalToSuperview()
-            make.right.equalTo(iconImageView.snp.left).inset(50)
+            make.right.equalTo(iconImageView.snp.left)
         }
         
         self.iconImageView.snp.makeConstraints { (make) in
-            make.top.bottom.equalToSuperview()
-            make.left.equalTo(dayNameLabel.snp.right).offset(50)
-            make.right.equalTo(tempLabel.snp.left).inset(50)
+            make.center.equalToSuperview()
         }
         
         self.tempLabel.snp.makeConstraints { (make) in
             make.top.right.bottom.equalToSuperview()
-            make.left.equalTo(iconImageView.snp.right).offset(50)
         }
     }
     

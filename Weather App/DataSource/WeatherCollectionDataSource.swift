@@ -41,7 +41,8 @@ class WeatherCollectionDataSource: NSObject, UICollectionViewDataSource, UIColle
             
         case 1:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HourlyWeatherCollectionCell.reuseIdentifier, for: indexPath) as! HourlyWeatherCollectionCell
-            cell.dataSource.items = hourlyWeather
+            let hours = WeatherHelper.getArrayOfHourlyViewModels(weather: Array(hourlyWeather.prefix(upTo: 16)))
+            cell.dataSourceItem = hours
             return cell
             
         case 2:

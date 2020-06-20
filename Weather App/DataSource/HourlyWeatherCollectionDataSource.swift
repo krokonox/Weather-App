@@ -10,14 +10,17 @@ import UIKit
 
 class HourlyWeatherCollectionDataSource: NSObject, UICollectionViewDataSource {
     
-    var items: [HourlyWeather] = []
+    var items: [HourlyWeatherViewModel] = []
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 1
+        return items.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: VerticalHourlyWeatherCollectionCell.reuseIdentifier,
                                                       for: indexPath) as! VerticalHourlyWeatherCollectionCell
+        cell.dataSourceItem = items[indexPath.row]
+        
         return cell
     }
 }

@@ -39,6 +39,7 @@ class ExtendedDetailWeatherCollectionCell: DataSourceCell {
         super.setupUI()
         
         self.addSubview(collectionView)
+        self.separatorLineView.isHidden = false
         self.collectionView.snp.makeConstraints { (make) in
             make.edges.equalToSuperview()
         }

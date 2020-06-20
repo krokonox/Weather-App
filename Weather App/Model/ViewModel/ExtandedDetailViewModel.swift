@@ -53,11 +53,11 @@ struct ExtendedDetailViewModel {
         case .humidity:
             return WeatherHelper.returnPercentage(number: weatherModel.humidity)
         case .wind:
-            return "\(WeatherHelper.returnPercentage(number: weatherModel.visibility)) Meters/s"
+            return "\(weatherModel.wind) Meters/s"
         case .feelsLike:
             return WeatherHelper.convertTemperature(temperature: weatherModel.feelsLikeTemp, unit: .celsius, unitSign: .withSign)
         case .pressure:
-            return "\(WeatherHelper.returnPercentage(number: weatherModel.pressure)) hPa"
+            return "\(weatherModel.pressure) hPa"
         case .visibility:
             return "\(weatherModel.visibility / 1000) Km"
         }

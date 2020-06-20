@@ -40,6 +40,7 @@ class WeeklyWeatherCollectionCell: DataSourceCell {
         super.setupUI()
         
         self.addSubview(collectionView)
+        separatorLineView.isHidden = false
         self.collectionView.snp.makeConstraints { (make) in
             make.edges.equalToSuperview()
         }
@@ -52,9 +53,9 @@ class WeeklyWeatherCollectionCell: DataSourceCell {
     }
 }
 
-extension WeeklyWeatherCollectionCell: UICollectionViewDelegateFlowLayout{
+extension WeeklyWeatherCollectionCell: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: (self.frame.width - 2 * 16), height: 68)
+        return CGSize(width: (self.frame.width - 2 * 16), height: 290 / 5)
     }
 }
 

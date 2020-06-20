@@ -25,6 +25,7 @@ class TodayWeatherCell: DataSourceCell {
         super.setupUI()
 
         self.addSubview(containerView)
+        self.separatorLineView.isHidden = false
         self.containerView.addSubview(dayLabel)
         self.containerView.addSubview(temperatureLabel)
         

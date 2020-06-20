@@ -31,7 +31,9 @@ extension Date {
     
     func getHour() -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "hh"
+        formatter.dateFormat = "h a"
+        formatter.amSymbol = "AM"
+        formatter.pmSymbol = "PM"
         let hour = formatter.string(from: self)
         
         return hour

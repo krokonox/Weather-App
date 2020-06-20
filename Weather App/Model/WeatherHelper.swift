@@ -23,6 +23,9 @@ class WeatherHelper {
     static func convertUnixTime(unixTime: Int, timeZone: Int) -> String {
         let date = Date(timeIntervalSince1970: TimeInterval(unixTime))
         let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "hh a"
+        dateFormatter.amSymbol = "AM"
+        dateFormatter.pmSymbol = "PM"
         let zone = TimeZone(secondsFromGMT: Int(timeZone))
         dateFormatter.timeZone = zone
         dateFormatter.locale = NSLocale.current
@@ -80,13 +83,13 @@ class WeatherHelper {
         var temp_max: Float = 0.00
         var temp_min: Float = 0.00
         var humidity = 0
-        
+
         for item in array {
             temp_max += item.main.temp_max
             temp_min += item.main.temp_min
             humidity += item.main.humidity
             
-            if index == 1 || index % 8 == 0 {
+            if index % 8 == 0 {
                 let day = item.dt_txt.returnAsDate()
                 arr.append(WeatherDay(day: day?.getTodayWeekDay() ?? "",
                                       humidity: humidity / 8,
@@ -106,6 +109,14 @@ class WeatherHelper {
         var array: [WeeklyWeatherViewModel] = []
         for item in weather {
             array.append(WeeklyWeatherViewModel(model: item))
+        }
+        return array
+    }
+    
+    static func getArrayOfHourlyViewModels(weather: [HourlyWeather]) -> [HourlyWeatherViewModel] {
+        var array: [HourlyWeatherViewModel] = []
+        for item in weather {
+            array.append(HourlyWeatherViewModel(viewModel: item))
         }
         return array
     }

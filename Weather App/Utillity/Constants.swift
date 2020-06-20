@@ -32,7 +32,7 @@ enum WeatherCellHeight: Int {
         case .current:
             return 80
         case .hourly:
-            return 170
+            return 110
         case .weekDays:
             return 290
         case .summury:
@@ -72,3 +72,4 @@ enum TempSign: String {
 enum DistanceUnit: Int {
     case meter, mile
 }
+

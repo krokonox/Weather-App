@@ -17,6 +17,14 @@ class WeatherViewController: UIViewController {
     
     var dataSource = WeatherCollectionDataSource()
     
+    private lazy var refreshControl: UIRefreshControl = {
+        let control = UIRefreshControl()
+        let attributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        control.attributedTitle = NSAttributedString(string: "Pull to refresh", attributes: attributes)
+        control.addTarget(self, action: #selector(refresh), for: .valueChanged)
+        return control
+    }()
+    
     private lazy var indicatorView: UIActivityIndicatorView = {
         let ativityIndicator = UIActivityIndicatorView()
         ativityIndicator.frame = CGRect(x: 0, y: 0, width: 45, height: 45)
@@ -80,6 +88,7 @@ class WeatherViewController: UIViewController {
     
     private func setupViews() {
         self.view.addSubview(collectionView)
+        self.collectionView.addSubview(refreshControl)
         self.collectionView.snp.makeConstraints { (make) in
             make.edges.equalToSuperview()
         }
@@ -126,6 +135,11 @@ class WeatherViewController: UIViewController {
                 }
             }
         }
+    
+    @objc func refresh() {
+        self.requestsMade()
+        self.refreshControl.endRefreshing()
+    }
     }
 
 extension WeatherViewController: UICollectionViewDelegateFlowLayout {
