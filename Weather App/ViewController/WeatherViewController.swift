@@ -7,10 +7,17 @@
 //
 
 import UIKit
+import CoreLocation
 
-class WeatherViewController: UIViewController {
+class WeatherViewController: UIViewController, LocationUpdateProtocol {
+    func locationDidUpdate(location: CLLocation) {
+        self.location = location
+    }
+    
     
     let dispatch = DispatchGroup()
+    
+    var location: CLLocation?
     
     var weather: CurrentWeather?
     var weatherForecast: [HourlyWeather] = []
@@ -78,6 +85,10 @@ class WeatherViewController: UIViewController {
         cv.showsVerticalScrollIndicator = false
         return cv
     }()
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
