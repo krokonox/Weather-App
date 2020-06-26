@@ -17,14 +17,16 @@ class WeatherHeaderView: UICollectionReusableView {
             self.set(weather: data)
         }
     }
+    
     private lazy var cityLabel: WhiteLabel = {
         let city = WhiteLabel()
+        city.font = UIFont.systemFont(ofSize: 21)
         return city
     }()
     
     private lazy var desciptionLabel: WhiteLabel = {
         let descripton = WhiteLabel()
-        descripton.font = UIFont.systemFont(ofSize: 11, weight: .thin)
+        descripton.font = UIFont.systemFont(ofSize: 14, weight: .light)
         return descripton
     }()
     
@@ -37,7 +39,7 @@ class WeatherHeaderView: UICollectionReusableView {
     lazy var stackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
-        stack.alignment = .fill
+        stack.alignment = .center
         stack.spacing = 0
         return stack
     }()
@@ -46,6 +48,7 @@ class WeatherHeaderView: UICollectionReusableView {
         super.init(frame: frame)
         self.setupUI()
     }
+    
     required init?(coder aCoder: NSCoder) {
         super.init(coder: aCoder)
         self.setupUI()
@@ -59,15 +62,21 @@ class WeatherHeaderView: UICollectionReusableView {
         self.stackView.addArrangedSubview(temperatureLabel)
         
         self.stackView.snp.makeConstraints { (make) in
-            make.center.equalToSuperview()
-            make.height.width.equalTo(100)
+            make.top.equalToSuperview().offset(45)
+            make.left.equalToSuperview().offset(50)
+            make.right.equalToSuperview().inset(50)
+            make.bottom.equalToSuperview()
         }
     }
     
     private func set(weather: CurrentWeather) {
         self.cityLabel.text = weather.name
         self.desciptionLabel.text = weather.weather.first?.description
-        self.temperatureLabel.text = "\(weather.main.temp)\(TempSign.withSign)"
+        self.temperatureLabel.text = """
+        \(WeatherHelper.convertTemperature(temperature: Int(weather.main.temp),
+        unit: .celsius,
+        unitSign: .withSign))
+        """
     }
     
     override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {

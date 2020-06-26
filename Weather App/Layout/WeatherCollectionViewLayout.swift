@@ -158,6 +158,7 @@ extension WeatherCollectionViewLayout {
                 }
             }
         }
+
         return visibleAttributes
     }
     
