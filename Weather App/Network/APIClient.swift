@@ -50,7 +50,6 @@ class APIClient {
                 if let data = data {
                     do {
                         let result = try JSONDecoder().decode(T.self, from: data)
-                        print(result, "-----------------")
                         completion(result, nil)
                     } catch {
                         completion(nil, .parsingError)

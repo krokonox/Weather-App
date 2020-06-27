@@ -73,3 +73,6 @@ enum DistanceUnit: Int {
     case meter, mile
 }
 
+enum Cities: String, CaseIterable {
+    case lviv = "Lviv", moscow = "Moscow", paris = "Paris", berlin = "Berlin", capetown = "Capetown"
+}
