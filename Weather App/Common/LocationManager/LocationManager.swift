@@ -19,49 +19,54 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     static let sh = LocationManager()
     
     private var locationManager = CLLocationManager()
+    let geoCoder = CLGeocoder()
+    
     var currentLocation: CLLocation?
     
     var delegate: LocationUpdateProtocol?
     
     private override init() {
         super.init()
+    }
+    
+    func checkLocationsService() {
+        self.locationManager.delegate = self
+        
+        let authStatus = CLLocationManager.authorizationStatus()
+        if authStatus == .notDetermined {
+            locationManager.requestAlwaysAuthorization()
+        } else if authStatus == .authorizedAlways || authStatus == .authorizedWhenInUse {
+            print(authStatus)
+        }
+        else {
+            let message = "Open settings?"
+            DispatchQueue.main.async {
+                self.showAlert(title: "", message: message)
+            }
+        }
         
         self.locationManager.delegate = self
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
         self.locationManager.distanceFilter = kCLLocationAccuracyHundredMeters
-        
-        if CLLocationManager.authorizationStatus() == .notDetermined {
-            locationManager.requestAlwaysAuthorization()
-        }
     }
     
-    private func checkLocationsService(closure: () -> ()) {
-        
-        let authorizationStatus = CLLocationManager.authorizationStatus()
-        if authorizationStatus == .notDetermined {
-            locationManager.requestWhenInUseAuthorization()
-        } else if authorizationStatus == .authorizedWhenInUse || authorizationStatus == .authorizedAlways {
-            print("위치 허용상태")
-        } else {
-            let message = "Allow location Services?"
-            self.showAlert(title: "", message: message)
-        }
-        
-//        if CLLocationManager.locationServicesEnabled() {
-//            closure()
-//        }
-//        else {
-//            DispatchQueue.main.async {
-//                self.showAlert(title: "Sorry", message: "Allow location services?")
-//            }
-//        }
-    }
-    
-    private func getCurrentLocation() -> CLLocationCoordinate2D? {
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+    func getCurrentLocation(completion: @escaping (Location) -> ()) {
         locationManager.startUpdatingLocation()
-        
-        return locationManager.location?.coordinate
+        if let location = locationManager.location {
+            self.convertCoordinatesToLocation(coordinares: location) { location in
+                completion(location)
+            }
+        }
+    }
+    
+    func convertCoordinatesToLocation(coordinares: CLLocation, completion: @escaping (_ location: Location) -> ()) {
+        geoCoder.reverseGeocodeLocation(coordinares, completionHandler: { (placemarks, _) -> Void in
+            
+            guard let placemark = placemarks?.first else { return }
+            let location = Location(with: placemark)
+            print(location)
+            completion(location)
+        })
     }
     
     private func showAlert(title: String, message: String) {

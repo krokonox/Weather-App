@@ -20,21 +20,22 @@ class APIClient {
     
     private init () {}
     
-    func request<T: Decodable>(at city: String,
+    func request<T: Decodable>(latitude: String,
+                               longitude: String,
                                with urlPath: NetworkConstants.UrlPath,
                                completionHandler completion: @escaping (_ response: T?, _ error: ResponseError?) -> ()) {
         let url = "\(NetworkConstants.baseUrl)\(urlPath.rawValue)"
         
         var urlComponents: URLComponents? {
             var components = URLComponents(string: url)
-            let queryItems = [URLQueryItem(name: "q", value: city),
+            let queryItems = [URLQueryItem(name: "lat", value: latitude),
+                              URLQueryItem(name: "lon", value: longitude),
                               URLQueryItem(name: "appid", value: NetworkConstants.apiKey)]
             components?.queryItems = queryItems
             return components
         }
         
         guard let components = urlComponents?.url else { return }
-        
         let request = URLRequest(url: components)
      
         session.dataTask(with: request) { data, response, error in
@@ -49,6 +50,7 @@ class APIClient {
                 if let data = data {
                     do {
                         let result = try JSONDecoder().decode(T.self, from: data)
+                        print(result, "-----------------")
                         completion(result, nil)
                     } catch {
                         completion(nil, .parsingError)
@@ -62,14 +64,14 @@ class APIClient {
         }.resume()
     }
     
-    func fetchCurrentWeather(at city: String, completionHandler completion: @escaping(CurrentWeatherCompletion) ) {
-        self.request(at: city, with: .current) { (weather: CurrentWeather?, error) in
+    func fetchCurrentWeather(at latitude: String, at longitude: String, completionHandler completion: @escaping(CurrentWeatherCompletion) ) {
+        self.request(latitude: latitude, longitude: longitude, with: .current) { (weather: CurrentWeather?, error) in
             completion(weather, error)
         }
     }
     
-    func fetchHourlyWeather(at city: String, completionHandler completion: @escaping(HourlyWeatherCompletion)) {
-        self.request(at: city, with: .forecast) { (weather: HourlyWeatherResponse?, error) in
+    func fetchHourlyWeather(at latitude: String, at longitude: String, completionHandler completion: @escaping(HourlyWeatherCompletion)) {
+        self.request(latitude: latitude, longitude: longitude, with: .forecast) { (weather: HourlyWeatherResponse?, error) in
             completion(weather, error)
         }
     }

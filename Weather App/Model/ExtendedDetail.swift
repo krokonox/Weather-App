@@ -44,7 +44,8 @@ struct ExtendedDetail {
         self.wind = weather.wind.speed
         self.feelsLikeTemp = Int(weather.main.feels_like)
         self.pressure = Float(weather.main.pressure)
-        self.visibility = weather.visibility
+        self.visibility = 10000
+        //self.visibility = weather.visibility
         self.timeZone = weather.timezone
     }
 }
