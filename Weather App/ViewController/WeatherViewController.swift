@@ -11,17 +11,22 @@ import CoreLocation
 
 class WeatherViewController: UIViewController {
 
-    let dispatch = DispatchGroup()
-    let locationManager = CLLocationManager()
+    private let dispatch = DispatchGroup()
+    private let locationManager = CLLocationManager()
     
-    var longitude: String = ""
-    var latitude: String = ""
+    private var dataSource = WeatherCollectionDataSource()
     
-    var weather: CurrentWeather?
-    var weatherForecast: [HourlyWeather] = []
+    private var currentWeather: CurrentWeather?
+    private var hourlyWeather: [HourlyWeather] = []
     
-    var dataSource = WeatherCollectionDataSource()
-    
+    private var latitude = ""
+    private var longitude = ""
+    var city = "" {
+        didSet {
+            self.requestsMade(request: .city)
+        }
+    }
+
     private lazy var refreshControl: UIRefreshControl = {
         let control = UIRefreshControl()
         let attributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
@@ -83,19 +88,13 @@ class WeatherViewController: UIViewController {
         cv.showsVerticalScrollIndicator = false
         return cv
     }()
-    
+ 
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.addSubview(indicatorView)
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        self.setupLocation()
     }
     
     private func setupViews() {
@@ -105,71 +104,20 @@ class WeatherViewController: UIViewController {
             make.edges.equalToSuperview()
         }
     }
-    
-    private func setBackgroundImage() {
-        let backgroundImage = UIImageView(frame: UIScreen.main.bounds)
-        backgroundImage.image = UIImage(named: "BackgroundClear")
-        backgroundImage.contentMode = UIView.ContentMode.scaleAspectFill
-        self.view.insertSubview(backgroundImage, at: 0)
-    }
-    
-    private func requestsMade(latitude: String, longitude: String) {
-        self.fetchWeather(latitude: latitude, longitude: longitude)
-        
-        self.dispatch.notify(queue: .main) { [weak self] in
-            self?.dataSource.currentWeather = self?.weather
-            self?.dataSource.hourlyWeather = self?.weatherForecast ?? []
-            self?.setupViews()
-            self?.indicatorView.stopAnimating()
-            self?.collectionView.reloadData()
-        }
-    }
-    
-    private func fetchWeather(latitude: String, longitude: String) {
-        self.dispatch.enter()
-        APIClient.sh.fetchHourlyWeather(at: latitude, at: longitude)  {[weak self] hourlyweather, error in
-                if let weather = hourlyweather {
-                    self?.weatherForecast = weather.list
-                    self?.dispatch.leave()
-                } else {
-                    self?.alert(message: error?.description ?? "")
-                    self?.dispatch.leave()
-                }
-        }
-        self.dispatch.enter()
-        APIClient.sh.fetchCurrentWeather(at: latitude, at: longitude) { [weak self] currentweather, error in
-                if let weather = currentweather {
-                    self?.weather = weather
-                    self?.dispatch.leave()
-                } else {
-                    self?.alert(message: error?.description ?? "")
-                    self?.dispatch.leave()
-                }
-            }
-    }
-    
-    private func setupLocation() {
-        self.locationManager.delegate = self
-        self.locationManager.requestAlwaysAuthorization()
-        self.locationManager.startUpdatingLocation()
-    }
-    
-    private func getCurrentLocation() {
-        self.locationManager.startUpdatingLocation()
-        self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        self.locationManager.distanceFilter = kCLLocationAccuracyHundredMeters
-        
-        if let coordinates = locationManager.location {
-            LocationManager.sh.convertCoordinatesToLocation(coordinares: coordinates) { (location) in
-                self.latitude = location.latitude
-                self.longitude = location.longitude
-                self.requestsMade(latitude: self.latitude, longitude: self.longitude)
-            }
-        }
+
+    func set(currentWeather: CurrentWeather, hourlyWeather: [HourlyWeather]) {
+        self.dataSource.currentWeather = currentWeather
+        self.dataSource.hourlyWeather = hourlyWeather
+        self.setupViews()
+        self.collectionView.reloadData()
     }
     
     @objc func refresh() {
-        self.requestsMade(latitude: self.latitude, longitude: self.longitude)
+        if city == "" {
+            self.requestsMade(request: .coordinates)
+        } else {
+            self.requestsMade(request: .coordinates)
+        }
         self.refreshControl.endRefreshing()
     }
 }
@@ -180,34 +128,60 @@ extension WeatherViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-
-extension WeatherViewController: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        if status == .authorizedAlways || status == .authorizedWhenInUse {
-            self.getCurrentLocation()
-        }
-    }
-
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if !locations.isEmpty {
-            locationManager.stopUpdatingLocation()
-            self.getCurrentLocation()
-        }
+extension WeatherViewController: WeatherDelegate {
+    func weatherDidLoad(currentWeather: CurrentWeather,
+                        hourlyweather: [HourlyWeather],
+                        latitude: String,
+                        longitude: String) {
+        self.set(currentWeather: currentWeather, hourlyWeather: hourlyweather)
+        self.latitude = latitude
+        self.longitude = longitude
     }
 }
 
 extension WeatherViewController {
-    private func showAlert(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        
-        alert.addAction(UIAlertAction(title: "Open Settings?", style: .default, handler: { _ in
-            if let url = URL(string: UIApplication.openSettingsURLString), UIApplication.shared.canOpenURL(url) {
-                UIApplication.shared.open(url, completionHandler: { (success) in
-                    print("Settings opened: \(success)")
-                })
+    private func requestsMade(request: RequestType) {
+        if request == .city {
+            self.fetchWeather(URLParameters.getByCity(city: self.city).parameters)
+        } else {
+            self.fetchWeather(URLParameters.getByCoordinates(latitude: self.latitude, longitude: self.longitude).parameters)
+        }
+        self.dispatch.notify(queue: .main) { [weak self] in
+            guard let current = self?.currentWeather, let self = self else { return }
+            self.dataSource.currentWeather = current
+            self.dataSource.hourlyWeather = self.hourlyWeather
+            self.collectionView.reloadData()
+        }
+    }
+       
+    private func fetchWeather(_ parameters: [String : String]) {
+        self.dispatch.enter()
+        APIClient.sh.fetchHourlyWeather(with: parameters)  { [weak self] hourlyweather, error in
+            if let weather = hourlyweather {
+                self?.hourlyWeather = weather.list
+                self?.dispatch.leave()
+            } else {
+                self?.alert(message: error?.description ?? "")
+                self?.dispatch.leave()
             }
-        }))
-        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
-        self.present(alert, animated: true, completion: nil)
+        }
+        self.dispatch.enter()
+        APIClient.sh.fetchCurrentWeather(with: parameters) { [weak self] currentweather, error in
+            if let weather = currentweather {
+                self?.currentWeather = weather
+                self?.dispatch.leave()
+            } else {
+                self?.alert(message: error?.description ?? "")
+                self?.dispatch.leave()
+            }
+        }
+    }
+}
+
+extension WeatherViewController: CitiesTableViewDelegate {
+    func cityDidSelected(_ city: String) {
+        print(city)
+        self.city = city
+        requestsMade(request: .city)
     }
 }

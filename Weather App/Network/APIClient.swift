@@ -20,24 +20,29 @@ class APIClient {
     
     private init () {}
     
-    func request<T: Decodable>(latitude: String,
-                               longitude: String,
+//    URLQueryItem(name: "lat", value: latitude),
+//    URLQueryItem(name: "lon", value: longitude),
+//    URLQueryItem(name: "appid", value: NetworkConstants.apiKey)
+    
+//    latitude: String,
+//    longitude: String,
+    func request<T: Decodable>(parameters: [String : String],
                                with urlPath: NetworkConstants.UrlPath,
                                completionHandler completion: @escaping (_ response: T?, _ error: ResponseError?) -> ()) {
         let url = "\(NetworkConstants.baseUrl)\(urlPath.rawValue)"
         
         var urlComponents: URLComponents? {
             var components = URLComponents(string: url)
-            let queryItems = [URLQueryItem(name: "lat", value: latitude),
-                              URLQueryItem(name: "lon", value: longitude),
-                              URLQueryItem(name: "appid", value: NetworkConstants.apiKey)]
+            var queryItems: [URLQueryItem] = []
+            parameters.forEach { queryItems.append(URLQueryItem(name: $0.key, value: $0.value)) }
+            queryItems.append(URLQueryItem(name: "appid", value: NetworkConstants.apiKey))
+            
             components?.queryItems = queryItems
             return components
         }
         
         guard let components = urlComponents?.url else { return }
         let request = URLRequest(url: components)
-     
         session.dataTask(with: request) { data, response, error in
             if error != nil {
                 completion(nil, .invalidURL)
@@ -63,14 +68,14 @@ class APIClient {
         }.resume()
     }
     
-    func fetchCurrentWeather(at latitude: String, at longitude: String, completionHandler completion: @escaping(CurrentWeatherCompletion) ) {
-        self.request(latitude: latitude, longitude: longitude, with: .current) { (weather: CurrentWeather?, error) in
+    func fetchCurrentWeather(with parameters: [String: String], completionHandler completion: @escaping(CurrentWeatherCompletion) ) {
+        self.request(parameters: parameters, with: .current) { (weather: CurrentWeather?, error) in
             completion(weather, error)
         }
     }
     
-    func fetchHourlyWeather(at latitude: String, at longitude: String, completionHandler completion: @escaping(HourlyWeatherCompletion)) {
-        self.request(latitude: latitude, longitude: longitude, with: .forecast) { (weather: HourlyWeatherResponse?, error) in
+    func fetchHourlyWeather(with parameters: [String: String], completionHandler completion: @escaping(HourlyWeatherCompletion)) {
+        self.request(parameters: parameters, with: .forecast) { (weather: HourlyWeatherResponse?, error) in
             completion(weather, error)
         }
     }

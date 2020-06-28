@@ -17,8 +17,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       
         let frame = UIScreen.main.bounds
         window = UIWindow(frame: frame)
-        window?.rootViewController = TabBarController()
-        window?.makeKeyAndVisible()
+        if let window = window {
+            Interface.sh.setup(window: window)
+        }
         
         return true
     }

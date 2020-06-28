@@ -36,7 +36,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         if authStatus == .notDetermined {
             locationManager.requestAlwaysAuthorization()
         } else if authStatus == .authorizedAlways || authStatus == .authorizedWhenInUse {
-            print(authStatus)
+            print("")
         }
         else {
             let message = "Open settings?"
@@ -64,7 +64,6 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
             
             guard let placemark = placemarks?.first else { return }
             let location = Location(with: placemark)
-            print(location)
             completion(location)
         })
     }

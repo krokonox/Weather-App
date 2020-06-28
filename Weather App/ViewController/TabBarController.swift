@@ -10,6 +10,9 @@ import UIKit
 
 class TabBarController: UITabBarController {
     
+    let weatherVC = WeatherViewController()
+    let citiesVC = CitiesViewController()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -21,12 +24,15 @@ class TabBarController: UITabBarController {
         self.tabBar.tintColor = UIColor(named: "SkyBlue")
         self.tabBar.barTintColor = .white
         
-        let weatherVC = WeatherViewController()
         weatherVC.tabBarItem.image = UIImage(named: "WeatherTab")
-        
-        let citiesVC = CitiesViewController()
+    
         citiesVC.tabBarItem.image = UIImage(named: "CityTab")
         
         self.viewControllers = [weatherVC, citiesVC]
+        
+    }
+    
+     func setDelegate(rootVC: RootViewController) {
+        rootVC.delegate = weatherVC
     }
 }

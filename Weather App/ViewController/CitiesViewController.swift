@@ -9,10 +9,9 @@
 import UIKit
 import SnapKit
 
-class CitiesViewController: UIViewController, CitiesTableViewDelegate {
+class CitiesViewController: UIViewController {
     
     let dataSource = CitiesTableViewDS()
-    var cities: [String] = Cities.allCases.map { $0.rawValue }
     
     // MARK: - Gui variables
     
@@ -46,10 +45,8 @@ class CitiesViewController: UIViewController, CitiesTableViewDelegate {
         super.viewDidLoad()
         
         self.view.backgroundColor = .white
-    }
-    
-    func cityDidSelected(_ city: String) {
-        self.present(WeatherViewController(), animated: true, completion: nil)
+        
+        self.setupViews()
     }
 }
 
