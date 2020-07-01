@@ -9,7 +9,7 @@
 import UIKit
 import CoreLocation
 
-class WeatherViewController: UIViewController {
+class WeatherViewController: BaseViewController {
     private let dispatch = DispatchGroup()
     private let locationManager = CLLocationManager()
     
@@ -46,12 +46,7 @@ class WeatherViewController: UIViewController {
         return ativityIndicator
     }()
     
-    private lazy var backgroundImage: UIImageView = {
-        let image = UIImageView()
-        image.image = UIImage(named: "BackgroundClear")
-        image.clipsToBounds = true
-        return image
-    }()
+    private lazy var backgroundImage = BackgroundImage(frame: .zero)
     
     private lazy var collectionView: UICollectionView = {
         let width = UIScreen.main.bounds.width
@@ -87,10 +82,6 @@ class WeatherViewController: UIViewController {
         cv.showsVerticalScrollIndicator = false
         return cv
     }()
- 
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -174,12 +165,5 @@ extension WeatherViewController {
                 self?.dispatch.leave()
             }
         }
-    }
-}
-
-extension WeatherViewController: CitiesTableViewDelegate {
-    func cityDidSelected(_ city: String) {
-        self.city = city
-        requestsMade(request: .city)
     }
 }

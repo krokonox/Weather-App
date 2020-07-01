@@ -26,3 +26,19 @@ class WhiteLabel: UILabel {
     }
 }
 
+class BackgroundImage: UIImageView {
+    override init(frame: CGRect) {
+        super.init(image: UIImage(named: "BackgroundClear"))
+        self.clipsToBounds = true
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setup() {
+        self.image = UIImage(named: "BackgroundClear")
+        self.clipsToBounds = true
+    }
+}
+

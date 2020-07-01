@@ -17,7 +17,7 @@ protocol WeatherDelegate: class {
                         longitude: String)
 }
 
-class RootViewController: UIViewController {
+class RootViewController: BaseViewController {
     
     private let dispatch = DispatchGroup()
     private let locationManager = CLLocationManager()

@@ -8,14 +8,9 @@
 
 import UIKit
 
-protocol CitiesTableViewDelegate: class {
-    func cityDidSelected(_ city: String)
-}
-
 class CitiesTableViewDS: NSObject, UITableViewDataSource, UITableViewDelegate {
     
     let cities: [String] = Cities.allCases.map { $0.rawValue }
-    weak var delegate: CitiesTableViewDelegate?
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.cities.count
@@ -25,6 +20,8 @@ class CitiesTableViewDS: NSObject, UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: UITableViewCell.reuseIdentifier)
         if let cell = cell {
             cell.selectionStyle = .none
+            cell.backgroundColor = .clear
+            cell.textLabel?.textColor = .white
             cell.textLabel?.text = cities[indexPath.row]
             return cell
         }
@@ -32,7 +29,6 @@ class CitiesTableViewDS: NSObject, UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-       // self.delegate?.cityDidSelected(cities[indexPath.row])
         if let vc = Interface.sh.tabBarController.viewControllers?[0] as? WeatherViewController {
             vc.city = cities[indexPath.row]
             Interface.sh.presentVC(vc: vc)

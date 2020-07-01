@@ -9,7 +9,7 @@
 import UIKit
 import SnapKit
 
-class CitiesViewController: UIViewController {
+class CitiesViewController: BaseViewController {
     
     let dataSource = CitiesTableViewDS()
     
@@ -26,16 +26,19 @@ class CitiesViewController: UIViewController {
     
     private lazy var tableView: UITableView = {
         let tv = UITableView()
+        tv.backgroundView = backgroundImage
         tv.register(UITableViewCell.self, forCellReuseIdentifier: UITableViewCell.reuseIdentifier)
         tv.dataSource = dataSource
         tv.delegate = dataSource
         return tv
     }()
     
+    private lazy var backgroundImage = BackgroundImage(frame: .zero)
+    
     private func setupViews() {
         self.navigationItem.searchController = searchBar
+        self.navigationItem.hidesSearchBarWhenScrolling = false
         self.view.addSubview(tableView)
-        
         self.tableView.snp.makeConstraints { (make) in
             make.edges.equalToSuperview()
         }
@@ -43,9 +46,6 @@ class CitiesViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.view.backgroundColor = .white
-        
         self.setupViews()
     }
 }
