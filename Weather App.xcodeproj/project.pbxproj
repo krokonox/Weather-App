@@ -251,7 +251,6 @@
 				84F98EF6247689340088BA52 /* Info.plist */,
 				84F98EF3247689340088BA52 /* LaunchScreen.storyboard */,
 				84F98F1F24768CA80088BA52 /* Common */,
-				84F98F18247689AF0088BA52 /* Network */,
 				84F98F1A247689BF0088BA52 /* Model */,
 				84F98F2024768CDF0088BA52 /* DataSource */,
 				84F98F1B247689C80088BA52 /* Layout */,
@@ -359,6 +358,7 @@
 		84F98F1F24768CA80088BA52 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				84F98F18247689AF0088BA52 /* Network */,
 				846EC6DD24A73C5700FCC771 /* LocationManager */,
 				84F98EE8247689260088BA52 /* AppDelegate.swift */,
 				84E8038224A89A43008E48A4 /* Interface.swift */,

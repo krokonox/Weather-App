@@ -10,7 +10,6 @@ import UIKit
 import CoreLocation
 
 class WeatherViewController: UIViewController {
-
     private let dispatch = DispatchGroup()
     private let locationManager = CLLocationManager()
     
@@ -153,7 +152,7 @@ extension WeatherViewController {
             self.collectionView.reloadData()
         }
     }
-       
+
     private func fetchWeather(_ parameters: [String : String]) {
         self.dispatch.enter()
         APIClient.sh.fetchHourlyWeather(with: parameters)  { [weak self] hourlyweather, error in
@@ -180,7 +179,6 @@ extension WeatherViewController {
 
 extension WeatherViewController: CitiesTableViewDelegate {
     func cityDidSelected(_ city: String) {
-        print(city)
         self.city = city
         requestsMade(request: .city)
     }
